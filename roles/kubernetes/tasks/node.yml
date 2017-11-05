@@ -1,0 +1,8 @@
+---
+- name: node - add token as fact
+  set_fact:
+    kubeadm_token: "{{ lookup('file', playbook_dir + '/run/master_token.txt') }}"
+
+- name: node - join cluster
+  command: kubeadm join --token={{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification 192.168.2.51:6443
+  become: true

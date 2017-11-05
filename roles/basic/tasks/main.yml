@@ -1,0 +1,43 @@
+---
+- name: install vim
+  apt: name=vim state=present update_cache=yes
+
+- name: install bridge-utils
+  apt: name=bridge-utils state=present update_cache=yes
+
+- name: install iptables persistent
+  apt:
+    name: iptables-persistent
+    force: yes
+    state: present
+
+- name: add Kubernetes apt key 
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+
+- name: install Kubernetes
+  apt: name=kubeadm state=present
+
+- name: get persistent iptables rules
+  shell: iptables -L
+  register: iptablesrules
+  check_mode: no
+ 
+- block:
+  - name: cni0 forward in
+    command: /sbin/iptables -A FORWARD -i cni0 -j ACCEPT -m comment --comment "cni-forward"
+  - name: cni0 forward out
+    command: /sbin/iptables -A FORWARD -o cni0 -j ACCEPT -m comment --comment "cni-forward"
+  - name: iptables persistent
+    shell: iptables-save > /etc/iptables/rules.v4
+  when: iptablesrules.stdout.find("cni-forward") == -1
+
+- name: add insecure registry to docker
+  copy:
+    src: "{{ role_path }}/files/daemon.json"
+    dest: /etc/docker/

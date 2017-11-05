@@ -1,0 +1,14 @@
+# This playbook deploys the whole application stack in this site.
+
+- name: become cluster
+  hosts: rcluster
+  become: true
+  roles:
+    - basic
+    - kubernetes
+
+- name: add traefik
+  hosts: rcluster
+  become: true
+  roles:
+    - traefik

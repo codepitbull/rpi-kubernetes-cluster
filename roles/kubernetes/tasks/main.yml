@@ -1,0 +1,9 @@
+- block:
+
+  - name: kubernetes | create master
+    include: master.yml
+    when: hostvars[inventory_hostname]['kubernetes_role'] == "master"
+
+  - name: kubernetes | create node
+    include: node.yml
+    when: hostvars[inventory_hostname]['kubernetes_role'] == "node"

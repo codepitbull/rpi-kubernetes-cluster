@@ -1,0 +1,5 @@
+[rcluster]
+192.168.2.51 name=nr1 ansible_user=pirate kubernetes_role=master
+192.168.2.52 name=nr2 ansible_user=pirate kubernetes_role=node
+192.168.2.53 name=nr3 ansible_user=pirate kubernetes_role=node
+192.168.2.54 name=nr4 ansible_user=pirate kubernetes_role=node

@@ -1,0 +1,9 @@
+- name: Ensure registry directory
+  file: path="/var/lib/registry" state=directory recurse=no
+
+- name: Copy configuration
+  template: src=registry-rc-svc.yml dest=/etc/kubernetes/registry-rc-svc.yml
+
+- name: Install registry rc and service
+  command: kubectl create -f /etc/kubernetes/registry-rc-svc.yml
+  become: no

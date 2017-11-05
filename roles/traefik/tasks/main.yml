@@ -1,0 +1,11 @@
+---
+- block:
+  - name: traefik - add traefik 
+    shell: kubectl apply -f https://raw.githubusercontent.com/hypriot/rpi-traefik/master/traefik-k8s-example.yaml
+    become: no 
+
+  - name: traefik - label node nr2 for traefik
+    shell: kubectl label node nr2 nginx-controller=traefik
+    become: no
+
+  when: hostvars[inventory_hostname]['kubernetes_role'] == "master"

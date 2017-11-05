@@ -1,0 +1,46 @@
+---
+- name: master - init kube master 
+  shell: kubeadm init --pod-network-cidr 10.244.0.0/16 --skip-preflight-checks
+  become: true
+
+- name: master - create token (ttl=0)
+  command: kubeadm token create --ttl 0 --groups system:bootstrappers:kubeadm:default-node-token --description "Master token"
+  register: master_token
+
+- name: master - copy token local
+  become: no
+  copy: content={{ master_token.stdout }} dest={{ playbook_dir }}/run/master_token.txt
+  delegate_to: localhost
+
+- name: master - make token a fact
+  set_fact:
+    kubeadm_token: "{{ lookup('file', playbook_dir + '/run/master_token.txt') }}"
+
+- name: master - copy admin.conf to user-dirs 
+  copy: remote_src=True src=/etc/kubernetes/admin.conf dest=/home/pirate/ owner=pirate group=pirate
+
+- name: master - add KUBECOFNIG to bashrc
+  lineinfile: dest=/home/pirate/.bashrc
+              line='export KUBECONFIG=$HOME/admin.conf'
+
+- name: master - sec-workaround for traefik and dashboard
+  #from: https://github.com/kubernetes/dashboard/issues/1800
+  shell: kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
+  become: no
+
+- name: master - Download cluster configuration
+  fetch:
+    src: "/etc/kubernetes/admin.conf"
+    dest: "{{ playbook_dir }}/run/"
+    flat: true
+
+- name: master - flannel part1
+  shell: curl -sSL https://rawgit.com/coreos/flannel/v0.7.1/Documentation/kube-flannel-rbac.yml | kubectl create -f -
+  become: no 
+
+- name: master - flannel part2
+  shell: curl -sSL https://rawgit.com/coreos/flannel/v0.7.1/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
+  become: no
+
+- name: master - create docker registry
+  shell: docker run --name=registry -d -p 5000:5000 --restart always budry/registry-arm

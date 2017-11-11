@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: vertx-scala-demo
+  labels:
+    app: vertx-scala-demo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 60
+  template:
+    metadata:
+      labels:
+        app: vertx-scala-demo
+        vertx-app-name: "demo1"
+
+    spec:
+      containers:
+      - name: vertx-scala-demo
+
+        image: codepitbull/vertx-scala-kubernetes:latest
+        imagePullPolicy: Never
+
+        env:
+          - name: JAVA_OPTS
+            value: "-Xmx200m -XX:MaxMetaspaceSize=280m"
+
+        ports:
+        - containerPort: 8666
+          protocol: TCP
+        - name: hazelcast
+          containerPort: 5701
+        - name: eventbus
+          containerPort: 15701
+
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "500Mi"
+          requests:
+            cpu: "500m"
+            memory: "500Mi"
+
+#        livenessProbe:
+#          httpGet:
+#            path: /alive
+#            port: 9000
+#          initialDelaySeconds: 60
+#          periodSeconds: 10
+#          failureThreshold: 6
+#          timeoutSeconds: 2
+#
+#        readinessProbe:
+#          httpGet:
+#            path: /ready
+#            port: 9000
+#          initialDelaySeconds: 30
+#          periodSeconds: 3
+#          failureThreshold: 5

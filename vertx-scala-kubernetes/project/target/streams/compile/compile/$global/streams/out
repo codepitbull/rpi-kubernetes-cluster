@@ -1,6 +1,0 @@
-[error] /Users/jochen/Development/0_playground/vertx-kubernetes-arm/project/Docker.scala:27:12: type mismatch;
-[error]  found   : Boolean
-[error]  required: Seq[Boolean]
-[error]         if(!useArm.value:_*) {
-[error]            ^
-[error] one error found

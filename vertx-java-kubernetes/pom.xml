@@ -74,7 +74,7 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>codepitbull/vertx-scala-kubernetes</name>
+                            <name>codepitbull/vertx-java-kubernetes</name>
                             <alias>dockerfile</alias>
                             <build>
                                 <from>frolvlad/alpine-oraclejdk8:slim</from>

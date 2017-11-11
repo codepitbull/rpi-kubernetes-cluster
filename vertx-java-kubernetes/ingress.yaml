@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: vertx-demo
+spec:
+  rules:
+  - http:
+     paths:
+     - path: /
+       backend:
+         serviceName: vertx-java-demo
+         servicePort: 8666

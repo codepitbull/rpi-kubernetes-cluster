@@ -2,9 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: vertx-java-demo
-  labels:
-    app: vertx-java-demo
-    vertx-app-name: vertx-java-demo
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -18,7 +15,7 @@ spec:
     metadata:
       labels:
         app: vertx-java-demo
-        vertx-app-name: vertx-java-demo
+        hazelcast: h1
 
     spec:
       containers:
@@ -37,6 +34,9 @@ spec:
           protocol: TCP
         - name: hazelcast
           containerPort: 5701
+          protocol: TCP
+        - name: eventbus
+          containerPort: 15701
           protocol: TCP
 
         resources:

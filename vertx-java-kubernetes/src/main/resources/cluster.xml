@@ -37,8 +37,6 @@
                                     class="com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategy">
                     <properties>
                         <property name="service-name">hazelcast-service</property>
-                        <!--<property name="service-label-name">vertx-app-name</property>-->
-                        <!--<property name="service-label-value">vertx-java-demo</property>-->
                     </properties>
                 </discovery-strategy>
             </discovery-strategies>

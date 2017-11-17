@@ -6,7 +6,7 @@ spec:
   rules:
   - http:
      paths:
-     - path: /
+     - path: /hello
        backend:
          serviceName: vertx-java-demo
          servicePort: 8666

@@ -4,6 +4,7 @@ metadata:
   name: vertx-java-demo
   labels:
     app: vertx-java-demo
+    vertx-app-name: vertx-java-demo
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -17,7 +18,7 @@ spec:
     metadata:
       labels:
         app: vertx-java-demo
-        vertx-app-name: "demo1"
+        vertx-app-name: vertx-java-demo
 
     spec:
       containers:
@@ -31,12 +32,12 @@ spec:
             value: "-Xmx200m -XX:MaxMetaspaceSize=280m"
 
         ports:
-        - containerPort: 8666
+        - name: http
+          containerPort: 8666
           protocol: TCP
         - name: hazelcast
           containerPort: 5701
-        - name: eventbus
-          containerPort: 15701
+          protocol: TCP
 
         resources:
           limits:

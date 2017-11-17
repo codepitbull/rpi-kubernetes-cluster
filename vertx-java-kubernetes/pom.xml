@@ -28,7 +28,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -46,6 +46,7 @@
                               <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                   <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
                               </transformer>
+                              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                           </transformers>
                           <artifactSet>
                           </artifactSet>
@@ -69,29 +70,24 @@
             </plugin>
 
             <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.3.6</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <images>
-                        <image>
-                            <name>codepitbull/vertx-java-kubernetes</name>
-                            <alias>dockerfile</alias>
-                            <build>
-                                <from>frolvlad/alpine-oraclejdk8:slim</from>
-                                <assembly>
-                                    <mode>dir</mode>
-                                    <targetDir>/opt/maven</targetDir>
-                                    <descriptor>docker-assembly.xml</descriptor>
-                                </assembly>
-                                <cmd>java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -jar /opt/maven/${project.artifactId}-${project.version}-fat.jar -cluster -cluster-port 15701</cmd>
-                            </build>
-                            <run>
-                                <ports>
-                                    <port>8666:8666</port>
-                                </ports>
-                            </run>
-                        </image>
-                    </images>
+                    <repository>codepitbull/vertx-java-kubernetes</repository>
+                    <tag>latest</tag>
+                    <buildArgs>
+                        <JAR_FILE>vertx-java-kubernetes-1.0.0-SNAPSHOT-fat.jar</JAR_FILE>
+                    </buildArgs>
                 </configuration>
             </plugin>
 
@@ -117,11 +113,16 @@
             <artifactId>vertx-hazelcast</artifactId>
             <version>${vertx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+        </dependency>
 
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast-kubernetes</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

@@ -6,7 +6,7 @@
         <property name="hazelcast.memcache.enabled">false</property>
         <property name="hazelcast.rest.enabled">false</property>
         <property name="hazelcast.wait.seconds.before.join">0</property>
-        <property name="hazelcast.logging.type">slf4j</property>
+        <property name="hazelcast.logging.type">jdk</property>
 
         <property name="hazelcast.health.monitoring.delay.seconds">2</property>
 
@@ -36,9 +36,8 @@
                 <discovery-strategy enabled="true"
                                     class="com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategy">
                     <properties>
-                        <property name="service-name">hazelcast-service</property>
-                        <!--<property name="service-label-name">vertx-app-name</property>-->
-                        <!--<property name="service-label-value">vertx-java-demo</property>-->
+                        <property name="service-label-name">vertx-app-name</property>
+                        <property name="service-label-value">vertx-java</property>
                     </properties>
                 </discovery-strategy>
             </discovery-strategies>

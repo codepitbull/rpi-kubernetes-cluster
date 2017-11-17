@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
- name: vertx-demo
+ name: vertx-java-demo-ingress
 spec:
   rules:
   - http:

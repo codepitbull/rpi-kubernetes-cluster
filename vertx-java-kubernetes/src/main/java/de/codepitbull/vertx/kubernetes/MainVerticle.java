@@ -1,6 +1,7 @@
 package de.codepitbull.vertx.kubernetes;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.ext.web.Router;
 
 import java.io.InputStream;
 
@@ -11,11 +12,12 @@ public class MainVerticle extends AbstractVerticle {
 
         System.out.println("I AM " + hashCode());
 
-        vertx.createHttpServer().requestHandler(req -> {
-              req.response()
-                .putHeader("content-type", "text/plain")
-                .end("Hello from Vert.x!");
-            }).listen(8666);
+        Router router = Router.router(vertx);
+        router.get("/hello").handler(r -> {
+            r.response().end("Hello World");
+        });
+
+        vertx.createHttpServer().requestHandler(router::accept).listen(8666);
 
         vertx.eventBus().consumer("hello", r -> {
             System.out.println("RECEIVED " + r.body());
